@@ -24,7 +24,7 @@ export default function Homenav() {
           >
             <span>Check Progress</span>
           </Link>
-          <div className='text-pink-700 text-3xl bg-blue-400 p-3 w-[3rem] h-[3rem] rounded-full flex justify-center items-center'>
+          <div className='text-[#282828] text-3xl bg-blue-400 p-3 w-[3rem] h-[3rem] rounded-full flex justify-center items-center'>
             A
           </div>
         </div>
