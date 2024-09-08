@@ -16,19 +16,28 @@ export default function Loginnav() {
       />
       <h1 className="text-3xl font-bold text-pink-600">Daily2Min</h1>
       <div className="flex justify-between mt-4 gap-8">
-        {user ? (<Link
-          href="/home"
-          className="flex items-center gap-5 self-start rounded-lg bg-pink-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
-        >
-          <span>Start Journaling</span>
-        </Link>) : (
+        {user ? (
+          <div className='flex justify-center items-center gap-8'>
+
+            <Link
+              href="/home"
+              className="flex items-center gap-5 self-start rounded-lg bg-pink-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
+            >
+              <span>Start Journaling</span>
+
+            </Link>
+
+          </div>
+        ) : (
           <Link
-          href="/api/auth/login"
-          className="flex items-center gap-5 self-start rounded-lg bg-pink-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
-        >
-          <span>Login</span>
-        </Link>
+            href="/api/auth/login"
+            className="flex items-center gap-5 self-start rounded-lg bg-pink-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
+          >
+            <span>Login</span>
+          </Link>
         )}
+        {user && (<Image src={user.picture ?? ''} alt={user.name ?? 'User'} width={65} height={65}
+          className='rounded-full items-center w-[65px]' />)}
       </div>
     </div>
   );
