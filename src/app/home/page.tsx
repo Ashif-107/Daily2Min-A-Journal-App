@@ -3,8 +3,9 @@
 
 import Link from "next/link";
 import { ChangeEvent, useState, FormEvent } from "react";
+import { withPageAuthRequired } from '@auth0/nextjs-auth0/client';
 
-export default function Page() {
+export default withPageAuthRequired(function Page() {
     const [entry, setEntry] = useState('');
 
     const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
@@ -62,3 +63,4 @@ export default function Page() {
         </div>
     );
 }
+)

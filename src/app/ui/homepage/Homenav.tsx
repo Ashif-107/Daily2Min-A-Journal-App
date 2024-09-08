@@ -5,8 +5,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import logo from '../../../../public/logo-white.png'
 import { useUser } from '@auth0/nextjs-auth0/client';
+
 export default function Homenav() {
   const { user, error, isLoading } = useUser();
+  
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>{error.message}</div>;
@@ -18,8 +20,8 @@ export default function Homenav() {
       <Image
           src={logo}
           alt='logo'
-          height={70}
-          width={70}
+          height={65}
+          width={65}
           className='color-white'
         /> 
       </div>
@@ -47,7 +49,7 @@ export default function Homenav() {
           className="flex items-center gap-5 self-start rounded-lg text-pink-500 p-3 text-sm font-medium  transition-colors hover:text-blue-400 md:text-base"
         >Logout</a>
         <img src={user.picture ?? ''} alt={user.name ?? 'User'} 
-          className='rounded-full items-center w-[70px] '
+          className='rounded-full items-center w-[65px]'
         />
       </div>
     </div>)

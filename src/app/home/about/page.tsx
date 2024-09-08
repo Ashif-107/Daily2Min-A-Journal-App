@@ -1,9 +1,11 @@
+'use client'
 import Image from "next/image";
 import thirty from '../../../../public/images/thirty.png'
 import book from '../../../../public/images/book.jpeg'
 import { FaGithub, FaLinkedin, FaInstagram } from 'react-icons/fa';
+import { withPageAuthRequired } from '@auth0/nextjs-auth0/client';
 /* eslint-disable react/no-unescaped-entities */
-export default function Page() {
+export default withPageAuthRequired(function Page() {
     return (
         <div className="min-h-screen">
             <h1 className="text-4xl text-center text-yellow-400 font-bold">Welcome To Daily2Min</h1>
@@ -78,4 +80,4 @@ export default function Page() {
         </div>
 
     )
-}
+})
