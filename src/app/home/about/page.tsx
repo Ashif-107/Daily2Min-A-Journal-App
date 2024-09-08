@@ -11,8 +11,8 @@ export default withPageAuthRequired(function Page() {
             <h1 className="text-4xl text-center text-yellow-400 font-bold">Welcome To Daily2Min</h1>
             <div className="text-white justify-center mt-8">
                 <div className="text-center">
-                    <h2 className="text-xl">Disclimer: I would recommend you all to read the full book of Atomic Habits to get the valuable life lesson which would help you to get better you</h2><br />
-                    <div className="text-[1.5rem] p-4">
+                    <h2 className="md:text-xl">Disclimer: I would recommend you all to read the full book of Atomic Habits to get the valuable life lesson which would help you to get better you</h2><br />
+                    <div className="md:text-[1.5rem] p-4">
                         <p className="align-justify">
                             I hope everyone here are eager to develope good habits..This One will really help you to get the real use of your habits<br /><br />
                             The Main motive of Atomic habits is to prove that, Small Habits Can make A Big Difference. The Arthor James Clear,
@@ -57,24 +57,25 @@ export default withPageAuthRequired(function Page() {
                         />
 
                     </div>
-                    <div className="footer p-7 bg-[#282828] text-2xl flex justify-between items-center">
-
-                        <p className="text-justify"><strong className="text-red-500"> Created by Ashif</strong> <br />
-                            <strong className="text-red-500">Email: mohamedashif1911@gmail.com</strong> <br />
+                    <div className="footer p-7 bg-[#282828] text-xl md:text-2xl flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
+                        <p className="text-center md:text-justify">
+                            <strong className="text-red-500">Created by Ashif</strong> <br />
+                            <strong className="text-red-500">mohamedashif1911@gmail.com</strong> <br />
                             <strong className="text-red-500">GitHub: Ashif-107</strong>
                         </p>
-                        <div className="flex space-x-6 ">
+                        <div className="flex justify-center space-x-6">
                             <a href="https://github.com/Ashif-107" target="_blank" rel="noopener noreferrer">
-                                <FaGithub size={60} className="hover:text-gray-600 transition-colors duration-300" />
+                                <FaGithub size={40} className="hover:text-gray-600 transition-colors duration-300" />
                             </a>
                             <a href="https://www.linkedin.com/in/mohamed-ashif-k-m" target="_blank" rel="noopener noreferrer">
-                                <FaLinkedin size={60} className="hover:text-blue-600 transition-colors duration-300" />
+                                <FaLinkedin size={40} className="hover:text-blue-600 transition-colors duration-300" />
                             </a>
                             <a href="https://www.instagram.com/ash_if_107" target="_blank" rel="noopener noreferrer">
-                                <FaInstagram size={60} className="hover:text-pink-600 transition-colors duration-300" />
+                                <FaInstagram size={40} className="hover:text-pink-600 transition-colors duration-300" />
                             </a>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>

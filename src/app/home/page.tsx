@@ -16,6 +16,7 @@ export default withPageAuthRequired(function Page() {
         event.preventDefault();
         // Handle the submission, like saving the entry to a database
         console.log('Journal Entry:', entry);
+        setEntry(" ");
     };
 
     return (

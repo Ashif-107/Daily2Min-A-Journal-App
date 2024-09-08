@@ -13,7 +13,7 @@ export default function Page() {
       <Loginnav />
       <div className="flex flex-col md:flex-row h-full font-semibold">
         <div className="leftside flex-1 px-8 flex flex-col py-12 justify-center">
-          <h1 className="text-red-500 text-4xl mb-8 font-extrabold">Welcome to Your Daily Journal</h1>
+          <h1 className="text-red-500 text-3xl md:text-4xl mb-8 font-extrabold">Welcome to Your Daily Journal</h1>
           <p className="text-xl text-gray-800 text-justify md:text-2xl lg:text-3xl md:leading lg:leading-relaxed">
             Kickstart your journaling habit with our simple & effective approach. Based on the 
              <strong className="text-red-500 bg-[#E0C580]"> 2-Mins Rule from James Clear's Atomic Habits,</strong>
