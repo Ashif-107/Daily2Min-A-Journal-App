@@ -2,11 +2,40 @@
 'use client'
 
 import Link from "next/link";
-import { ChangeEvent, useState, FormEvent } from "react";
+import { ChangeEvent, useState, FormEvent, useEffect } from "react";
 import { withPageAuthRequired } from '@auth0/nextjs-auth0/client';
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 export default withPageAuthRequired(function Page() {
     const [entry, setEntry] = useState('');
+    const { user, isLoading } = useUser();
+
+    useEffect(() => {
+        if (user && !isLoading) {
+          // Call your API route to create or update the user
+          fetch('/api/user', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              name: user.name,
+              email: user.email,
+            }),
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log('User created or updated:', data);
+            // You can update UI or redirect here if needed
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+        }
+      }, [user, isLoading]);
+    
+      if (isLoading) return <div>Loading...</div>;
+    
 
     const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
         setEntry(event.target.value);
