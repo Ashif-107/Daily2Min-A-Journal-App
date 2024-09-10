@@ -1,10 +1,11 @@
-import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from '@auth0/nextjs-auth0';
 import prisma from '../../../../lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(req: NextApiRequest, res: NextApiResponse) {
-  const session = await getSession(req, res);
+export async function POST(req: NextRequest) {
+  
+  try {
+  const session = await getSession(req as any);
 
   if (!session || !session.user) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
@@ -12,7 +13,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
 
   const { sub, name, email } = session.user;
 
-  try {
+  
     let user = await prisma.user.findUnique({
       where: { auth0Id: sub! },
     });
