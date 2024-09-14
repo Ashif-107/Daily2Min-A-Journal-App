@@ -1,5 +1,8 @@
 import { PrismaClient } from '@prisma/client';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+
+import { getSession } from '@auth0/nextjs-auth0';
+
 
 const prisma = new PrismaClient();
 
@@ -40,5 +43,51 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Failed to save the journal entry' }, { status: 500 });
   } finally {
     await prisma.$disconnect();
+  }
+}
+
+export async function GET(req: NextRequest) {
+  try {
+    // Retrieve the session
+    const session = await getSession();
+
+    // If no session, return unauthorized
+    if (!session || !session.user) {
+      console.log('Unauthorized: No session or user found');
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Fetch the user’s ID from the session
+    const auth0Id = session.user.sub; // Adjust according to how you store the user ID
+    console.log('User ID:', auth0Id);
+
+    const user = await prisma.user.findUnique({
+      where: {
+        auth0Id: auth0Id,
+      },
+    });
+
+    if (!user) {
+      console.log('User not found in the database for Auth0 ID:', auth0Id);
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // Fetch journals for the logged-in user based on their unique ID
+    const journals = await prisma.journal.findMany({
+      where: {
+        userId: user.id, // Filter by the user's unique ID
+      },
+    });
+
+    console.log('Fetched journals:', JSON.stringify(journals, null, 2));
+
+    if (journals.length === 0) {
+      return NextResponse.json({ message: 'No Journals found' }, { status: 404 });
+    }
+
+    return NextResponse.json(journals);
+  } catch (error) {
+    console.error('Error fetching journals:', error);
+    return NextResponse.json({ error: 'Internal Server Error', details: (error as Error).message }, { status: 500 }); 
   }
 }

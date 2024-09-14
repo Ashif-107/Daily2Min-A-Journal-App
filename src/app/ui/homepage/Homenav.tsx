@@ -43,9 +43,8 @@ export default function Homenav() {
 
         {/* Sidebar (only visible on mobile, hidden on larger screens) */}
         <div
-          className={`fixed top-0 right-0 h-full w-[250px] bg-gray-800 text-white transition-transform transform ${
-            isOpen ? 'translate-x-0' : 'translate-x-full'
-          } md:hidden`}
+          className={`fixed top-0 right-0 h-full w-[250px] bg-gray-800 text-white transition-transform transform ${isOpen ? 'translate-x-0' : 'translate-x-full'
+            } md:hidden`}
         >
           <div className="p-4 flex flex-col h-full">
             <button className="text-pink-500 mb-4" onClick={toggleMenu}>
@@ -60,14 +59,14 @@ export default function Homenav() {
                 Home
               </Link>
               <Link
-                href="/myjournals"
+                href="/home/myjournals"
                 className="text-lg font-medium text-white hover:text-blue-400"
                 onClick={toggleMenu}
               >
                 My Journals
               </Link>
               <Link
-                href="/progress"
+                href="/home/progress"
                 className="text-lg font-medium text-white hover:text-blue-400"
                 onClick={toggleMenu}
               >
@@ -100,13 +99,13 @@ export default function Homenav() {
             Home
           </Link>
           <Link
-            href="/myjournals"
+            href="/home/myjournals"
             className="text-pink-500 text-base font-medium transition-colors hover:text-blue-400"
           >
             My Journals
           </Link>
           <Link
-            href="/progress"
+            href="/home/progress"
             className="text-pink-500 text-base font-medium transition-colors hover:text-blue-400"
           >
             Check Progress
