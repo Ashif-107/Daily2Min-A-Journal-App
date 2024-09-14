@@ -1,28 +1,28 @@
 generator client {
   provider = "prisma-client-js"
 }
- 
+
 datasource db {
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL")
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 model User {
-  id        String   @id @default(uuid())   // Unique user ID
-  auth0Id   String   @unique                // Auth0 user ID, unique for each user
-  name      String?                         // Optional name field
-  email     String?   @unique               // Optional email, can be useful for user identification
-  streakCount    Int       @default(0)      // Current streak count
-  lastJournalDate DateTime?                 // Date of the last journal entry
-  journals  Journal[]                       // Relation to Journal entries
-  createdAt DateTime @default(now())        // Automatically stores the user creation timestamp
+  id              String    @id @default(uuid())
+  auth0Id         String    @unique
+  name            String?
+  email           String?   @unique
+  streakCount     Int       @default(0)
+  lastJournalDate DateTime?
+  createdAt       DateTime  @default(now())
+  journals        Journal[] 
 }
 
 model Journal {
-  id         String   @id @default(uuid())  // Unique journal entry ID
-  user       User     @relation(fields: [userId], references: [id])  // Foreign key to User
-  userId     String                            // The user ID that created this journal
-  content    String                            // Content of the journal entry
-  createdAt  DateTime @default(now())          // Timestamp when the journal entry was created
+  id        String   @id @default(uuid())
+  userId    String
+  content   String
+  createdAt DateTime @default(now())
+  user      User     @relation( fields: [userId], references: [id])
 }

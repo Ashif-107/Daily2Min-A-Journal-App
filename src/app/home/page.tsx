@@ -12,41 +12,75 @@ export default withPageAuthRequired(function Page() {
 
     useEffect(() => {
         if (user && !isLoading) {
-          // Call your API route to create or update the user
-          fetch('/api/user', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              name: user.name,
-              email: user.email,
-            }),
-          })
-          .then(response => response.json())
-          .then(data => {
-            console.log('User created or updated:', data);
-            // You can update UI or redirect here if needed
-          })
-          .catch(error => {
-            console.error('Error:', error);
-          });
+            // Call your API route to create or update the user
+            fetch('/api/user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: user.name,
+                    email: user.email,
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('User created or updated:', data);
+                    // You can update UI or redirect here if needed
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         }
-      }, [user, isLoading]);
-    
-      if (isLoading) return <div>Loading...</div>;
-    
+    }, [user, isLoading]);
+
+    if (isLoading) return <div>Loading...</div>;
+
 
     const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
         setEntry(event.target.value);
     };
 
-    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        // Handle the submission, like saving the entry to a database
-        console.log('Journal Entry:', entry);
-        setEntry(" ");
+    
+        if (!entry.trim()) {
+            alert("Journal entry cannot be empty!");
+            return;
+        }
+    
+        console.log('Auth0 User ID:', user?.sub);
+        console.log('Submitting entry:', entry);
+    
+        try {
+            const response = await fetch('/api/journal', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    content: entry,
+                    auth0UserId: user?.sub, // Send the Auth0 user ID
+                }),
+            });
+    
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Failed to save the journal entry");
+            }
+    
+            const data = await response.json();
+            console.log('Journal saved:', data);
+            setEntry(""); // Clear the input field after saving
+            // Add user feedback here (e.g., success message)
+        } catch (error) {
+            console.error('Error saving journal:', error);
+            alert(error instanceof Error ? error.message : 'An unknown error occurred');
+        }
     };
+    
+    
+
 
     return (
         <div className="p-4 md:p-8">
