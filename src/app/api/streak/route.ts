@@ -17,10 +17,17 @@ export async function GET(req: NextRequest) {
         if (!user) {
             return NextResponse.json({ message: 'User not found' }, { status: 404 });
         }
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const lastEntry = user.lastJournalDate ? new Date(user.lastJournalDate) : null;
+        const entryMadeToday = lastEntry && lastEntry >= today;
         
         return NextResponse.json({
             currentStreak: user.streakCount,
-            longestStreak: user.longestStreak
+            longestStreak: user.longestStreak,
+            entryMadeToday: entryMadeToday
         });
     } catch (error) {
         return NextResponse.json({ message: 'Internal Server Error', error }, { status: 500 });

@@ -2,7 +2,7 @@
 'use client'
 
 import Link from "next/link";
-import { ChangeEvent, useState, FormEvent, useEffect } from "react";
+import { ChangeEvent, useState, FormEvent, useEffect, useCallback } from "react";
 import { withPageAuthRequired } from '@auth0/nextjs-auth0/client';
 import { useUser } from '@auth0/nextjs-auth0/client';
 
@@ -12,8 +12,28 @@ export default withPageAuthRequired(function Page() {
     const [streak, setStreak] = useState<number | null>(null);
     const [longestStreak, setLongestStreak] = useState<number | null>(null);
     const [loadingStreak, setLoadingStreak] = useState(true);
+    const [entryMadeToday, setEntryMadeToday] = useState<boolean | null>(null);
     const [streakError, setStreakError] = useState<string | null>(null);
+    const [isSaving, setIsSaving] = useState(false);
 
+
+    const fetchStreakData = useCallback(async () => {
+        try {
+            const response = await fetch('/api/streak');
+            if (!response.ok) {
+                throw new Error('Failed to fetch streak data');
+            }
+            const data = await response.json();
+            setStreak(data.currentStreak);
+            setLongestStreak(data.longestStreak);
+            setEntryMadeToday(data.entryMadeToday);
+            setLoadingStreak(false);
+        } catch (error) {
+            console.error('Error fetching streak:', error);
+            setStreakError('Failed to fetch streak information');
+            setLoadingStreak(false);
+        }
+    }, []);
 
     useEffect(() => {
         if (user && !isLoading) {
@@ -33,14 +53,9 @@ export default withPageAuthRequired(function Page() {
                     console.log('User created or updated:', data);
 
                     // Fetch initial streak data
-                    return fetch('/api/streak');
+                    return fetchStreakData();
                 })
-                .then(response => response.json())
-                .then(data => {
-                    setStreak(data.currentStreak);
-                    setLongestStreak(data.longestStreak);
-                    setLoadingStreak(false);
-                })
+
                 .catch(error => {
                     console.error('Error:', error);
                     setStreakError('Failed to fetch streak information');
@@ -48,7 +63,7 @@ export default withPageAuthRequired(function Page() {
                 });
 
         }
-    }, [user, isLoading]);
+    }, [user, isLoading, fetchStreakData]);
 
 
 
@@ -63,6 +78,8 @@ export default withPageAuthRequired(function Page() {
             alert("Journal entry cannot be empty!");
             return;
         }
+
+        setIsSaving(true);
 
         console.log('Auth0 User ID:', user?.sub);
         console.log('Submitting entry:', entry);
@@ -86,7 +103,6 @@ export default withPageAuthRequired(function Page() {
 
             const data = await response.json();
             console.log('Journal saved:', data);
-            setEntry(""); // Clear the input field after saving
             // Add user feedback here (e.g., success message)
 
             // Update streak after saving journal entry
@@ -97,10 +113,16 @@ export default withPageAuthRequired(function Page() {
             const streakData = await streakResponse.json();
             setStreak(streakData.currentStreak);
             setLongestStreak(streakData.longestStreak);
+            setEntryMadeToday(streakData.entryMadeToday);
+
+            setEntry(""); // Clear the input field after saving
+            setEntryMadeToday(true);
 
         } catch (error) {
             console.error('Error saving journal:', error);
             alert(error instanceof Error ? error.message : 'An unknown error occurred');
+        } finally {
+            setIsSaving(false);
         }
     };
 
@@ -128,31 +150,38 @@ export default withPageAuthRequired(function Page() {
                 <div className="writing_field mb-8 md:mb-0 md:mr-8 md:flex-[3.5] w-full">
                     <form onSubmit={handleSubmit}>
                         <textarea
-                            value={entry}
+                            value={isSaving ? "Saving..." : entry}
                             onChange={handleChange}
-                            placeholder="Write your journal entry here..."
+                            placeholder={isSaving ? 'Saving...' : "Write your journal entry here..."}
                             rows={15}
                             className="w-full p-4 text-lg border border-gray-300 rounded-md bg-transparent text-white"
+                            disabled={isSaving}
                         />
                         <br />
                         <button
                             type="submit"
                             className="mt-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-pink-600 transition-colors"
+                            disabled={isSaving}
                         >
-                            Save Entry
+                            {isSaving ? 'Saving...' : 'Save Entry'}
                         </button>
                     </form>
                 </div>
                 <div className="streak_part flex-1 p-6 md:flex-[1.5] bg-[#282828] rounded-md text-white">
                     <h2 className="text-xl font-bold mb-4">Keep The Streak Alive</h2>
                     {streakError ? (
-                    <p className="text-red-500">{streakError}</p>
-                ) : (
-                    <>
-                        <p>Current Streak: {streak !== null ? streak : 'Loading...'} Days</p>
-                        <p>Longest Streak: {longestStreak !== null ? longestStreak : 'Loading...'} Days</p>
-                    </>
-                )}
+                        <p className="text-red-500">{streakError}</p>
+                    ) : (
+                        <>
+                            <p>Current Streak: {streak !== null ? streak : 'Loading...'} Days</p>
+                            <p>Longest Streak: {longestStreak !== null ? longestStreak : 'Loading...'} Days</p>
+                            <p>
+                                {entryMadeToday === null ? 'Loading...' :
+                                    entryMadeToday ? "You've made an entry today. Great job!" :
+                                        "You haven't made an entry today yet. Keep the streak going!"}
+                            </p>
+                        </>
+                    )}
                     {/* Add more streak-related information here */}
                 </div>
             </div>
