@@ -10,6 +10,7 @@ export default withPageAuthRequired(function Page() {
     const [entry, setEntry] = useState('');
     const { user, isLoading } = useUser();
     const [streak, setStreak] = useState<number | null>(null);
+    const [longestStreak, setLongestStreak] = useState<number | null>(null);
     const [loadingStreak, setLoadingStreak] = useState(true);
     const [streakError, setStreakError] = useState<string | null>(null);
 
@@ -30,25 +31,22 @@ export default withPageAuthRequired(function Page() {
                 .then(response => response.json())
                 .then(data => {
                     console.log('User created or updated:', data);
-                    // You can update UI or redirect here if needed
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
 
-            // Fetch streak information
-            fetch('/api/streak')
+                    // Fetch initial streak data
+                    return fetch('/api/streak');
+                })
                 .then(response => response.json())
                 .then(data => {
                     setStreak(data.currentStreak);
+                    setLongestStreak(data.longestStreak);
+                    setLoadingStreak(false);
                 })
                 .catch(error => {
-                    console.error('Error fetching streak:', error);
+                    console.error('Error:', error);
                     setStreakError('Failed to fetch streak information');
-                })
-                .finally(() => {
                     setLoadingStreak(false);
                 });
+
         }
     }, [user, isLoading]);
 
@@ -92,12 +90,13 @@ export default withPageAuthRequired(function Page() {
             // Add user feedback here (e.g., success message)
 
             // Update streak after saving journal entry
-            const streakResponse = await fetch('/api/streak');
+            const streakResponse = await fetch('/api/streak', { method: 'POST' });
             if (!streakResponse.ok) {
-                throw new Error('Failed to fetch updated streak');
+                throw new Error('Failed to update streak');
             }
             const streakData = await streakResponse.json();
             setStreak(streakData.currentStreak);
+            setLongestStreak(streakData.longestStreak);
 
         } catch (error) {
             console.error('Error saving journal:', error);
@@ -106,7 +105,7 @@ export default withPageAuthRequired(function Page() {
     };
 
 
-    if (isLoading || loadingStreak) return <div>Loading...</div>;
+    if (isLoading) return <div>Loading...</div>;
 
 
     return (
@@ -147,11 +146,13 @@ export default withPageAuthRequired(function Page() {
                 <div className="streak_part flex-1 p-6 md:flex-[1.5] bg-[#282828] rounded-md text-white">
                     <h2 className="text-xl font-bold mb-4">Keep The Streak Alive</h2>
                     {streakError ? (
-                        <p className="text-red-500">{streakError}</p>
-                    ) : (
-                        <p>Streak: {streak !== null ? streak : 'Loading...'} Days</p>
-                    )}
-                    <p>Longest Streak: 10 Days</p>
+                    <p className="text-red-500">{streakError}</p>
+                ) : (
+                    <>
+                        <p>Current Streak: {streak !== null ? streak : 'Loading...'} Days</p>
+                        <p>Longest Streak: {longestStreak !== null ? longestStreak : 'Loading...'} Days</p>
+                    </>
+                )}
                     {/* Add more streak-related information here */}
                 </div>
             </div>

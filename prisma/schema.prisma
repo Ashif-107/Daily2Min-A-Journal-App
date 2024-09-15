@@ -16,7 +16,8 @@ model User {
   streakCount     Int       @default(0)
   lastJournalDate DateTime?
   createdAt       DateTime  @default(now())
-  journals        Journal[] 
+  longestStreak   Int       @default(0)
+  journals        Journal[]
 }
 
 model Journal {
@@ -24,5 +25,5 @@ model Journal {
   userId    String
   content   String
   createdAt DateTime @default(now())
-  user      User     @relation( fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 }
