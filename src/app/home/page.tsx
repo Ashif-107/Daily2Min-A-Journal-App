@@ -168,19 +168,19 @@ export default withPageAuthRequired(function Page() {
                     </form>
                 </div>
                 <div className="streak_part flex-1 p-6 md:flex-[1.5] bg-[#282828] rounded-md text-white">
-                    <h2 className="text-xl font-bold mb-4">Keep The Streak Alive</h2>
+                    <h2 className="text-2xl font-bold mb-8 text-orange-500 text-center">Keep The Streak Alive</h2>
                     {streakError ? (
                         <p className="text-red-500">{streakError}</p>
                     ) : (
-                        <>
-                            <p>Current Streak: {streak !== null ? streak : 'Loading...'} Days</p>
-                            <p>Longest Streak: {longestStreak !== null ? longestStreak : 'Loading...'} Days</p>
-                            <p>
+                        <div className="text-[1.1rem]">
+                            <p className="mb-3 text-blue-400">Current Streak: <strong className="text-white">{streak !== null ? streak : 'Loading...'}</strong> Days</p>
+                            <p className="mb-3 text-green-300">Longest Streak: <strong className="text-white"> {longestStreak !== null ? longestStreak : 'Loading...'}</strong>  Days</p>
+                            <p className="mb-3 text-purple-400 font-bold">
                                 {entryMadeToday === null ? 'Loading...' :
                                     entryMadeToday ? "You've made an entry today. Great job!" :
                                         "You haven't made an entry today yet. Keep the streak going!"}
                             </p>
-                        </>
+                        </div>
                     )}
                     {/* Add more streak-related information here */}
                 </div>
