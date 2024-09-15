@@ -77,6 +77,9 @@ export async function GET(req: NextRequest) {
       where: {
         userId: user.id, // Filter by the user's unique ID
       },
+      orderBy: {
+        createdAt: 'desc', // Display latest journals on top
+      },
     });
 
     console.log('Fetched journals:', JSON.stringify(journals, null, 2));

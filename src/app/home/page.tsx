@@ -9,6 +9,10 @@ import { useUser } from '@auth0/nextjs-auth0/client';
 export default withPageAuthRequired(function Page() {
     const [entry, setEntry] = useState('');
     const { user, isLoading } = useUser();
+    const [streak, setStreak] = useState<number | null>(null);
+    const [loadingStreak, setLoadingStreak] = useState(true);
+    const [streakError, setStreakError] = useState<string | null>(null);
+
 
     useEffect(() => {
         if (user && !isLoading) {
@@ -31,10 +35,23 @@ export default withPageAuthRequired(function Page() {
                 .catch(error => {
                     console.error('Error:', error);
                 });
+
+            // Fetch streak information
+            fetch('/api/streak')
+                .then(response => response.json())
+                .then(data => {
+                    setStreak(data.currentStreak);
+                })
+                .catch(error => {
+                    console.error('Error fetching streak:', error);
+                    setStreakError('Failed to fetch streak information');
+                })
+                .finally(() => {
+                    setLoadingStreak(false);
+                });
         }
     }, [user, isLoading]);
 
-    if (isLoading) return <div>Loading...</div>;
 
 
     const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
@@ -43,15 +60,15 @@ export default withPageAuthRequired(function Page() {
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-    
+
         if (!entry.trim()) {
             alert("Journal entry cannot be empty!");
             return;
         }
-    
+
         console.log('Auth0 User ID:', user?.sub);
         console.log('Submitting entry:', entry);
-    
+
         try {
             const response = await fetch('/api/journal', {
                 method: 'POST',
@@ -63,23 +80,33 @@ export default withPageAuthRequired(function Page() {
                     auth0UserId: user?.sub, // Send the Auth0 user ID
                 }),
             });
-    
+
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.error || "Failed to save the journal entry");
             }
-    
+
             const data = await response.json();
             console.log('Journal saved:', data);
             setEntry(""); // Clear the input field after saving
             // Add user feedback here (e.g., success message)
+
+            // Update streak after saving journal entry
+            const streakResponse = await fetch('/api/streak');
+            if (!streakResponse.ok) {
+                throw new Error('Failed to fetch updated streak');
+            }
+            const streakData = await streakResponse.json();
+            setStreak(streakData.currentStreak);
+
         } catch (error) {
             console.error('Error saving journal:', error);
             alert(error instanceof Error ? error.message : 'An unknown error occurred');
         }
     };
-    
-    
+
+
+    if (isLoading || loadingStreak) return <div>Loading...</div>;
 
 
     return (
@@ -119,8 +146,12 @@ export default withPageAuthRequired(function Page() {
                 </div>
                 <div className="streak_part flex-1 p-6 md:flex-[1.5] bg-[#282828] rounded-md text-white">
                     <h2 className="text-xl font-bold mb-4">Keep The Streak Alive</h2>
-                    <p>Streak: 5 days</p>
-                    <p>Longest Streak: 10 days</p>
+                    {streakError ? (
+                        <p className="text-red-500">{streakError}</p>
+                    ) : (
+                        <p>Streak: {streak !== null ? streak : 'Loading...'} Days</p>
+                    )}
+                    <p>Longest Streak: 10 Days</p>
                     {/* Add more streak-related information here */}
                 </div>
             </div>
