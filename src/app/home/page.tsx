@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ChangeEvent, useState, FormEvent, useEffect, useCallback } from "react";
 import { withPageAuthRequired } from '@auth0/nextjs-auth0/client';
 import { useUser } from '@auth0/nextjs-auth0/client';
+import StreakPortion from "../ui/StreakPortion";
 
 export default withPageAuthRequired(function Page() {
     const [entry, setEntry] = useState('');
@@ -17,23 +18,6 @@ export default withPageAuthRequired(function Page() {
     const [isSaving, setIsSaving] = useState(false);
 
 
-    const fetchStreakData = useCallback(async () => {
-        try {
-            const response = await fetch('/api/streak');
-            if (!response.ok) {
-                throw new Error('Failed to fetch streak data');
-            }
-            const data = await response.json();
-            setStreak(data.currentStreak);
-            setLongestStreak(data.longestStreak);
-            setEntryMadeToday(data.entryMadeToday);
-            setLoadingStreak(false);
-        } catch (error) {
-            console.error('Error fetching streak:', error);
-            setStreakError('Failed to fetch streak information');
-            setLoadingStreak(false);
-        }
-    }, []);
 
     useEffect(() => {
         if (user && !isLoading) {
@@ -52,8 +36,6 @@ export default withPageAuthRequired(function Page() {
                 .then(data => {
                     console.log('User created or updated:', data);
 
-                    // Fetch initial streak data
-                    return fetchStreakData();
                 })
 
                 .catch(error => {
@@ -63,7 +45,7 @@ export default withPageAuthRequired(function Page() {
                 });
 
         }
-    }, [user, isLoading, fetchStreakData]);
+    }, [user, isLoading]);
 
 
 
@@ -146,7 +128,7 @@ export default withPageAuthRequired(function Page() {
                     </Link>
                 </p>
             </div>
-            <div className="flex flex-col md:flex-row justify-between">
+            <div className="flex flex-col-reverse md:flex-row justify-between">
                 <div className="writing_field mb-8 md:mb-0 md:mr-8 md:flex-[3.5] w-full">
                     <form onSubmit={handleSubmit}>
                         <textarea
@@ -167,22 +149,8 @@ export default withPageAuthRequired(function Page() {
                         </button>
                     </form>
                 </div>
-                <div className="streak_part flex-1 p-6 md:flex-[1.5] bg-[#282828] rounded-md text-white">
-                    <h2 className="text-2xl font-bold mb-8 text-orange-500 text-center">Keep The Streak Alive</h2>
-                    {streakError ? (
-                        <p className="text-red-500">{streakError}</p>
-                    ) : (
-                        <div className="text-[1.1rem]">
-                            <p className="mb-3 text-blue-400">Current Streak: <strong className="text-white">{streak !== null ? streak : 'Loading...'}</strong> Days</p>
-                            <p className="mb-3 text-green-300">Longest Streak: <strong className="text-white"> {longestStreak !== null ? longestStreak : 'Loading...'}</strong>  Days</p>
-                            <p className="mb-3 text-purple-400 font-bold">
-                                {entryMadeToday === null ? 'Loading...' :
-                                    entryMadeToday ? "You've made an entry today. Great job!" :
-                                        "You haven't made an entry today yet. Keep the streak going!"}
-                            </p>
-                        </div>
-                    )}
-                    {/* Add more streak-related information here */}
+                <div className="streak_part flex-1 mb-10 p-6 md:flex-[1.5] bg-[#282828] rounded-md text-white">
+                    <StreakPortion />
                 </div>
             </div>
         </div>
