@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+# Daily2Min
+A Journaling Habit formation app based of 2 Minute Rule from Atomic Habits
 
-First, run the development server:
+
+
+## Features
+
+**What differentiate this App with other journaling app.** This App is build for helping you to create a good habit of journaling.. while enjoying it and not think it as a hassle or a work. Instead in mean time this will become a part of your daily life.
+Our goal is to help you to build the journaling habit in a very easy way, you can take this a challenge and try not to lose your streak
+
+- Clean and neat UI/UX
+- Login to your account to keep track your Streak
+- Revisit yout past journals
+- Cross platform
+
+
+## Live on
+daily2min.vercel.app
+
+
+
+
+
+## Tech Stack
+
+**Client:** NextJs, TailwindCSS
+
+**Server:** Vercel PostgreSQL, TypeScript, Prisma 
+
+**Authentication:** Auth0, axios
+
+
+## Screenshots
+![image](https://github.com/user-attachments/assets/f296c327-2da5-45f2-b8c6-53eae81946e9)
+
+## Login/Signup Page 
+![image](https://github.com/user-attachments/assets/76605958-8f81-4206-9b32-e00459d75e83)
+
+## Home page where you can write your journal and Keep track of your Streaks
+![image](https://github.com/user-attachments/assets/b32283fd-e9ec-45bc-9ca4-70b9ba9f698a)
+
+## Place where you can revist your past journals
+![image](https://github.com/user-attachments/assets/45f2ed2f-0b13-4c60-a634-9353236d398d)
+
+
+## Future Implementation Plans
+
+- Add Charts to keep track of usefull infos
+- More UI components in Streak Info -- Calenders etc.
+
+## Contributing
+
+Contributions are always welcome!
+
+Please adhere to this project's `code of conduct`.
+
+## Installation
+
+Install my-project with npm
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+  npm install 
+  npm run dev
+```
+Make sure to install all the packages
+To use Prisma studio
+```bash
+  npm prisma client
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
